@@ -2,12 +2,19 @@ package com.cinherited.leadsservice.dtos;
 
 import com.cinherited.leadsservice.models.Lead;
 
+import javax.validation.constraints.NotNull;
+
 public class LeadDTO {
     private int leadId;
+    @NotNull(message = "leadName is required")
     private String leadName;
+    @NotNull(message = "leadPhone is required")
     private String leadPhone;
+    @NotNull(message = "leadEmail is required")
     private String leadEmail;
+    @NotNull(message = "leadCompanyName is required")
     private String leadCompanyName;
+    @NotNull(message = "leadSalesRepId is required")
     private int leadSalesRepId;
 
     public LeadDTO() {
