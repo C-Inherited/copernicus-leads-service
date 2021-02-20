@@ -6,4 +6,10 @@ import java.util.List;
 
 public interface ILeadServices {
     List<LeadDTO> findAll();
+
+    List<LeadDTO> findAllBySalesRepId(int salesRepId);
+
+    LeadDTO findByLeadId(int leadId);
+
+    LeadDTO createNewLead(LeadDTO leadDTO);
 }

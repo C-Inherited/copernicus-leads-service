@@ -1,5 +1,7 @@
 package com.cinherited.leadsservice.models;
 
+import com.cinherited.leadsservice.dtos.LeadDTO;
+
 import javax.persistence.*;
 
 @Entity
@@ -23,6 +25,14 @@ public class Lead {
         this.leadEmail = leadEmail;
         this.leadCompanyName = leadCompanyName;
         this.leadSalesRepId = leadSalesRepId;
+    }
+
+    public static Lead parseFromLeadDTO(LeadDTO leadDTO) {
+        return new Lead(leadDTO.getLeadName(),
+                leadDTO.getLeadPhone(),
+                leadDTO.getLeadEmail(),
+                leadDTO.getLeadCompanyName(),
+                leadDTO.getLeadSalesRepId());
     }
 
     public int getLeadId() {

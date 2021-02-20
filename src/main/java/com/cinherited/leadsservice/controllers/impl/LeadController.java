@@ -4,8 +4,7 @@ import com.cinherited.leadsservice.controllers.interfaces.ILeadController;
 import com.cinherited.leadsservice.dtos.LeadDTO;
 import com.cinherited.leadsservice.services.impl.ILeadServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,4 +20,24 @@ public class LeadController implements ILeadController {
     public List<LeadDTO> findAll() {
         return leadServices.findAll();
     }
+
+    @Override
+    @GetMapping("/leads/all/{salesRepId}")
+    public List<LeadDTO> findAllBySalesRepId(@PathVariable int salesRepId) {
+        return leadServices.findAllBySalesRepId(salesRepId);
+    }
+
+    @Override
+    @GetMapping("/leads/{leadId}")
+    public LeadDTO findByLeadId(@PathVariable int leadId) {
+        return leadServices.findByLeadId(leadId);
+    }
+
+    @Override
+    @PostMapping("leads/new")
+    public LeadDTO createNewLead(@RequestBody LeadDTO leadDTO) {
+        return leadServices.createNewLead(leadDTO);
+    }
+
+
 }
