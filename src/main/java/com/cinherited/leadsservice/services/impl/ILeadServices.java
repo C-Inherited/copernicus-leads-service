@@ -12,4 +12,8 @@ public interface ILeadServices {
     LeadDTO findByLeadId(int leadId);
 
     LeadDTO createNewLead(LeadDTO leadDTO);
+
+    LeadDTO updateLead(LeadDTO leadDTO);
+
+    int deleteLead(int leadId);
 }

@@ -39,5 +39,18 @@ public class LeadController implements ILeadController {
         return leadServices.createNewLead(leadDTO);
     }
 
+    @Override
+    @PutMapping("leads/update")
+    public LeadDTO updateLead(@RequestBody LeadDTO leadDTO) {
+        return leadServices.updateLead(leadDTO);
+    }
+
+
+    @Override
+    @DeleteMapping("leads/delete/{leadId}")
+    public int deleteLead(@PathVariable int leadId) {
+        return leadServices.deleteLead(leadId);
+    }
+
 
 }

@@ -10,4 +10,6 @@ public interface ILeadController {
     List<LeadDTO> findAllBySalesRepId(int salesRepId);
     LeadDTO findByLeadId(int leadId);
     LeadDTO createNewLead(LeadDTO leadDTO);
+    LeadDTO updateLead(LeadDTO leadDTO);
+    int deleteLead(int leadId);
 }

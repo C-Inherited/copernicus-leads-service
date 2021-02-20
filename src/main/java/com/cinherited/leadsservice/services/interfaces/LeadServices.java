@@ -38,4 +38,21 @@ public class LeadServices implements ILeadServices {
     public LeadDTO createNewLead(LeadDTO leadDTO) {
         return LeadDTO.parseFromLead(leadRepository.save(Lead.parseFromLeadDTO(leadDTO)));
     }
+
+    @Override
+    public LeadDTO updateLead(LeadDTO leadDTO) {
+        Lead tLead = leadRepository.getLeadByLeadId(leadDTO.getLeadId());
+        if (tLead == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        tLead = Lead.parseFromLeadDTO(leadDTO);
+        return LeadDTO.parseFromLead(leadRepository.save(tLead));
+    }
+
+    @Override
+    public int deleteLead(int leadId) {
+        Lead tLead = leadRepository.getLeadByLeadId(leadId);
+        if (tLead == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        leadRepository.delete(tLead);
+        return 0;
+    }
+
 }
