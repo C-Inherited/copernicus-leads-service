@@ -1,9 +1,18 @@
 package com.cinherited.leadsservice.controllers.impl;
 
 import com.cinherited.leadsservice.controllers.interfaces.ILeadController;
+import com.cinherited.leadsservice.dtos.AuthenticationRequest;
+import com.cinherited.leadsservice.dtos.AuthenticationResponse;
 import com.cinherited.leadsservice.dtos.LeadDTO;
-import com.cinherited.leadsservice.services.impl.ILeadServices;
+import com.cinherited.leadsservice.security.MyUserDetailsService;
+import com.cinherited.leadsservice.services.interfaces.ILeadServices;
+import com.cinherited.leadsservice.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,12 +21,23 @@ import java.util.List;
 public class LeadController implements ILeadController {
 
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtil jwtTokenUtil;
+
+    @Autowired
+    private MyUserDetailsService userDetailsService;
+
+    @Autowired
     ILeadServices leadServices;
 
 
+    private static String validationAuthOk;
+
     @Override
     @GetMapping("/leads/all")
-    public List<LeadDTO> findAll() {
+    public List<LeadDTO> findAll(@RequestHeader(value = "Authorization") String authorizationHeader) {
         return leadServices.findAll();
     }
 
@@ -53,4 +73,33 @@ public class LeadController implements ILeadController {
     }
 
 
+    @RequestMapping(value = "/leads/authenticate", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+            );
+        }
+        catch (BadCredentialsException e) {
+            throw new Exception("Incorrect username or password", e);
+        }
+
+
+        final UserDetails userDetails = userDetailsService
+                .loadUserByUsername(authenticationRequest.getUsername());
+
+        final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+
+    public static String getValidationAuthOk() {
+        return validationAuthOk;
+    }
+
+    public static void setValidationAuthOk(String validationAuthOk) {
+        LeadController.validationAuthOk = validationAuthOk;
+    }
 }

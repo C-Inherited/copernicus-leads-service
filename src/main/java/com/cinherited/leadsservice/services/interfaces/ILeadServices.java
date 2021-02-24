@@ -1,4 +1,4 @@
-package com.cinherited.leadsservice.services.impl;
+package com.cinherited.leadsservice.services.interfaces;
 
 import com.cinherited.leadsservice.dtos.LeadDTO;
 

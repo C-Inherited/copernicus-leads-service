@@ -1,9 +1,12 @@
-package com.cinherited.leadsservice.services.interfaces;
+package com.cinherited.leadsservice.services.impl;
 
+import com.cinherited.leadsservice.clients.ValidationClient;
 import com.cinherited.leadsservice.dtos.LeadDTO;
+import com.cinherited.leadsservice.dtos.ValidationDTO;
+import com.cinherited.leadsservice.enums.ValidationType;
 import com.cinherited.leadsservice.models.Lead;
 import com.cinherited.leadsservice.repositories.LeadRepository;
-import com.cinherited.leadsservice.services.impl.ILeadServices;
+import com.cinherited.leadsservice.services.interfaces.ILeadServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,9 @@ import java.util.stream.Collectors;
 public class LeadServices implements ILeadServices {
     @Autowired
     LeadRepository leadRepository;
+
+    @Autowired
+    ValidationClient validationClient;
 
     @Override
     public List<LeadDTO> findAll() {
@@ -36,6 +42,9 @@ public class LeadServices implements ILeadServices {
 
     @Override
     public LeadDTO createNewLead(LeadDTO leadDTO) {
+        if (validationClient.checkIsEmailValid(new ValidationDTO(leadDTO.getLeadEmail(), 0, ValidationType.EMAIL))){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         return LeadDTO.parseFromLead(leadRepository.save(Lead.parseFromLeadDTO(leadDTO)));
     }
 
