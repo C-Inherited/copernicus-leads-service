@@ -42,9 +42,9 @@ public class LeadServices implements ILeadServices {
 
     @Override
     public LeadDTO createNewLead(LeadDTO leadDTO) {
-        if (validationClient.checkIsEmailValid(new ValidationDTO(leadDTO.getLeadEmail(), 0, ValidationType.EMAIL))){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+//        if (validationClient.checkIsEmailValid(new ValidationDTO(leadDTO.getLeadEmail(), 0, ValidationType.EMAIL))){
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+//        }
         return LeadDTO.parseFromLead(leadRepository.save(Lead.parseFromLeadDTO(leadDTO)));
     }
 
