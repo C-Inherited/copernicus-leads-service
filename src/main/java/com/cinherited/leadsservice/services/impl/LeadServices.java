@@ -1,6 +1,7 @@
 package com.cinherited.leadsservice.services.impl;
 
 import com.cinherited.leadsservice.clients.ValidationClient;
+import com.cinherited.leadsservice.controllers.impl.LeadController;
 import com.cinherited.leadsservice.dtos.LeadDTO;
 import com.cinherited.leadsservice.dtos.ValidationDTO;
 import com.cinherited.leadsservice.enums.ValidationType;
@@ -42,9 +43,9 @@ public class LeadServices implements ILeadServices {
 
     @Override
     public LeadDTO createNewLead(LeadDTO leadDTO) {
-//        if (validationClient.checkIsEmailValid(new ValidationDTO(leadDTO.getLeadEmail(), 0, ValidationType.EMAIL))){
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-//        }
+        if (!validationClient.checkIsEmailValid(new ValidationDTO(leadDTO.getLeadEmail(), 0, ValidationType.EMAIL), "Bearer "+LeadController.getValidationAuthOk())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         return LeadDTO.parseFromLead(leadRepository.save(Lead.parseFromLeadDTO(leadDTO)));
     }
 
