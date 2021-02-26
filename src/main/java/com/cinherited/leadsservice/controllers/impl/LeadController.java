@@ -35,6 +35,8 @@ public class LeadController implements ILeadController {
 
     private static String validationAuthOk;
 
+    private static String salesRepAuthOk;
+
     @Override
     @GetMapping("/leads/all")
     public List<LeadDTO> findAll(@RequestHeader(value = "Authorization") String authorizationHeader) {
@@ -101,5 +103,13 @@ public class LeadController implements ILeadController {
 
     public static void setValidationAuthOk(String validationAuthOk) {
         LeadController.validationAuthOk = validationAuthOk;
+    }
+
+    public static String getSalesRepAuthOk() {
+        return salesRepAuthOk;
+    }
+
+    public static void setSalesRepAuthOk(String salesRepAuthOk) {
+        LeadController.salesRepAuthOk = salesRepAuthOk;
     }
 }

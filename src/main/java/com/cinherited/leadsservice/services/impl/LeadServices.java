@@ -46,6 +46,12 @@ public class LeadServices implements ILeadServices {
         if (!validationClient.checkIsEmailValid(new ValidationDTO(leadDTO.getLeadEmail(), 0, ValidationType.EMAIL), "Bearer "+LeadController.getValidationAuthOk())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        if (!validationClient.checkIsNameValid(new ValidationDTO(leadDTO.getLeadName(), 0, ValidationType.NAME), "Bearer "+LeadController.getValidationAuthOk())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        if (!validationClient.checkIsPhoneNumberValid(new ValidationDTO(leadDTO.getLeadPhone(), 0, ValidationType.PHONE_NUMBER), "Bearer "+LeadController.getValidationAuthOk())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         return LeadDTO.parseFromLead(leadRepository.save(Lead.parseFromLeadDTO(leadDTO)));
     }
 

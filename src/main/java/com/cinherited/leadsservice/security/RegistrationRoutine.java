@@ -1,5 +1,6 @@
 package com.cinherited.leadsservice.security;
 
+import com.cinherited.leadsservice.clients.SalesRepClient;
 import com.cinherited.leadsservice.clients.ValidationClient;
 import com.cinherited.leadsservice.controllers.impl.LeadController;
 import com.cinherited.leadsservice.dtos.AuthenticationRequest;
@@ -23,7 +24,12 @@ public class RegistrationRoutine {
     @Autowired
     ValidationClient validationClient;
 
+    @Autowired
+    SalesRepClient salesRepClient;
+
     public static boolean isValidationRegistered = false;
+
+    public static boolean isSalesRepRegistered = false;
 
     private static final Logger log = LoggerFactory.getLogger(RegistrationRoutine.class);
 
@@ -39,16 +45,32 @@ public class RegistrationRoutine {
                 AuthenticationRequest authenticationRequest = new AuthenticationRequest("leads-service", "leads-service");
                 ResponseEntity<?> responseEntity= circuitBreaker.run(() -> validationClient.createAuthenticationToken(authenticationRequest), throwable -> fallbackTransaction("validation-service"));
                 if (responseEntity != null) {
-                    parseJWT(responseEntity);
+                    parseValidationJWT(responseEntity);
                     isValidationRegistered = true;
                     log.info("Registered with validation-service auth token: {}", LeadController.getValidationAuthOk());
                 }
             }
+            if (!isSalesRepRegistered){
+                CircuitBreaker circuitBreaker = circuitBreakerFactory.create("salesrep-service");
+                log.info("Trying to register with salesrep-service {}", dateFormat.format(new Date()));
+                AuthenticationRequest authenticationRequest = new AuthenticationRequest("leads-service", "leads-service");
+                ResponseEntity<?> responseEntity= circuitBreaker.run(() -> salesRepClient.createAuthenticationToken(authenticationRequest), throwable -> fallbackTransaction("salesrep-service"));
+                if (responseEntity != null) {
+                    parseSalesRepJWT(responseEntity);
+                    isSalesRepRegistered = true;
+                    log.info("Registered with salesrep-service auth token: {}", LeadController.getSalesRepAuthOk());
+                }
+            }
     }
 
-    private void parseJWT(ResponseEntity<?> responseEntity) {
+    private void parseValidationJWT(ResponseEntity<?> responseEntity) {
         String auth = Objects.requireNonNull(responseEntity.getBody()).toString();
         LeadController.setValidationAuthOk(auth.substring(5, auth.length() - 1));
+    }
+
+    private void parseSalesRepJWT(ResponseEntity<?> responseEntity) {
+        String auth = Objects.requireNonNull(responseEntity.getBody()).toString();
+        LeadController.setSalesRepAuthOk(auth.substring(5, auth.length() - 1));
     }
 
     private ResponseEntity<?> fallbackTransaction(String serviceName) {
