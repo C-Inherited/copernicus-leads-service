@@ -17,9 +17,9 @@ public interface ValidationClient {
     @PostMapping("validation/email")
     boolean checkIsEmailValid(@RequestBody @Valid ValidationDTO validationDTO, @RequestHeader(value = "Authorization") String authorizationHeader);
 
-    @PostMapping("/name")
+    @PostMapping("validation/name")
     boolean checkIsNameValid(@RequestBody @Valid ValidationDTO validationDTO, @RequestHeader(value = "Authorization") String authorizationHeader);
 
-    @PostMapping("/phone-number")
+    @PostMapping("validation/phone-number")
     boolean checkIsPhoneNumberValid(@RequestBody @Valid ValidationDTO validationDTO, @RequestHeader(value = "Authorization") String authorizationHeader);
 }
